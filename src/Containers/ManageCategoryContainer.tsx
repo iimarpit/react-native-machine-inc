@@ -27,16 +27,30 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const MachineAttributeField = (props: any) => {
   const [visible, setVisible] = React.useState(false)
-
   const openMenu = () => setVisible(true)
-
   const closeMenu = () => setVisible(false)
+  const [activeMenuItem, setActiveMenuItem] = React.useState<
+    'text' | 'date' | 'checkbox' | 'number'
+  >('text')
+
+  const iconMap = {
+    date: 'calendar-month',
+    number: 'numeric-3-box-outline',
+    text: 'format-color-text',
+    checkbox: 'checkbox-marked',
+  }
+
+  const changeFieldType = (type: 'text' | 'date' | 'checkbox' | 'number') => {
+    setActiveMenuItem(type)
+    closeMenu()
+    props.updateField({ type }, props.fieldId)
+  }
   return (
     <View style={[tw`flex flex-row items-center justify-between gap-2`]}>
       <TextInput
-        label={props.label}
+        label={'Attribute Name'}
         value={props.value}
-        onChangeText={text => props.setFieldValue(text)}
+        onChangeText={text => props.updateField({ name: text }, props.fieldId)}
         mode="outlined"
         style={tw`grow bg-white`}
       />
@@ -44,14 +58,47 @@ const MachineAttributeField = (props: any) => {
         visible={visible}
         onDismiss={closeMenu}
         anchor={
-          <IconButton icon={'format-color-text'} size={30} onPress={openMenu} />
+          <IconButton
+            icon={iconMap[activeMenuItem]}
+            size={30}
+            onPress={openMenu}
+          />
         }
       >
-        <Menu.Item onPress={() => {}} title="Item 1" />
-        <Menu.Item onPress={() => {}} title="Item 2" />
-        <Menu.Item onPress={() => {}} title="Item 3" />
+        <Menu.Item
+          leadingIcon={iconMap.text}
+          onPress={() => {
+            changeFieldType('text')
+          }}
+          title="Text"
+        />
+        <Menu.Item
+          leadingIcon={iconMap.number}
+          onPress={() => {
+            changeFieldType('number')
+          }}
+          title="Number"
+        />
+        <Menu.Item
+          leadingIcon={iconMap.date}
+          onPress={() => {
+            changeFieldType('date')
+          }}
+          title="Date"
+        />
+        <Menu.Item
+          leadingIcon={iconMap.checkbox}
+          onPress={() => {
+            changeFieldType('checkbox')
+          }}
+          title="CheckBox"
+        />
       </Menu>
-      <IconButton icon={'delete'} size={30} onPress={openMenu} />
+      <IconButton
+        icon={'delete'}
+        size={30}
+        onPress={() => props.deleteField(props.fieldId)}
+      />
     </View>
   )
 }
@@ -64,6 +111,23 @@ const AddCategoryComponent = props => {
     copyFields.push({ type: 'text', name: '' })
     setFields(copyFields)
   }
+
+  const updateField = (partialFieldData: any, fieldId: any) => {
+    let copyFields = _.clone(fields)
+    copyFields = copyFields.map((field, index) => {
+      if (index == fieldId) {
+        return { ...field, ...partialFieldData }
+      }
+      return field
+    })
+    setFields(copyFields)
+  }
+
+  const deleteField = fieldId => {
+    let copyFields = _.clone(fields)
+    copyFields = copyFields.filter((field, index) => index != fieldId)
+    setFields(copyFields)
+  }
   return (
     <>
       <View>
@@ -73,10 +137,15 @@ const AddCategoryComponent = props => {
           onChangeText={text => setCategoryName(text)}
           mode="outlined"
         />
-        {fields.map(field => {
-          return <>{field.type === 'text' && <MachineAttributeField />}</>
-        })}
-        <Button onPress={addField}>Add Field</Button>
+        {fields.map((field, index) => (
+          <MachineAttributeField
+            updateField={updateField}
+            deleteField={deleteField}
+            fieldId={index}
+            value={field.name}
+          />
+        ))}
+        <Button style={[tw`mt-2`]} mode="contained" onPress={addField}>Add Attribute Field</Button>
       </View>
     </>
   )
