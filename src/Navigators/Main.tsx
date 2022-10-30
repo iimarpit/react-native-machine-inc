@@ -68,7 +68,8 @@ const MainNavigator = () => {
       <Drawer.Screen name="Home" component={DashboardContainer} />
       {machines?.map((p: MachineState, index) => (
         <Drawer.Screen
-          name={`${p.categoryName}${index}` || 'test'}
+          key={p.uuid}
+          name={`${p.categoryName}` || 'test'}
           component={CategoryViewContainer}
         />
       ))}
