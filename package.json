@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.7",
+    "@react-native-community/datetimepicker": "^6.5.3",
     "@react-native-masked-view/masked-view": "^0.2.7",
     "@react-navigation/bottom-tabs": "^6.3.2",
     "@react-navigation/drawer": "^6.5.0",
@@ -21,6 +22,7 @@
     "@types/lodash": "^4.14.186",
     "i18next": "^21.8.14",
     "lodash": "^4.17.21",
+    "moment": "^2.29.4",
     "nanoid": "^4.0.0",
     "prop-types": "^15.8.1",
     "react": "18.0.0",

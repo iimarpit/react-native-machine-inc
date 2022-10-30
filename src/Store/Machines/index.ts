@@ -15,10 +15,18 @@ const slice = createSlice({
     deleteCategory: (state, { payload: { uuid } }) => {
       return state.filter(machine => machine.uuid !== uuid)
     },
+    patchCategory: (state, { payload: { categoryData, uuid } }) => {
+      return state.map(machine => {
+        if (uuid === machine.uuid) {
+          return { ...machine, ...categoryData }
+        }
+        return machine
+      })
+    },
   },
 })
 
-export const { addCategory, deleteCategory } = slice.actions
+export const { addCategory, deleteCategory, patchCategory } = slice.actions
 
 export default slice.reducer
 
@@ -30,7 +38,7 @@ export type MachineState = {
 }
 export type MachineField = {
   name: string
-  type: string | boolean | Date | number
+  type: 'string' | 'checkbox' | 'date' | 'number'
 }
 
 type MachinePayload = {

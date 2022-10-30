@@ -9,6 +9,7 @@ import {
   addCategory,
   MachineField,
   deleteCategory,
+  patchCategory,
 } from '@/Store/Machines'
 import tw from 'twrnc'
 import {
@@ -22,9 +23,9 @@ import {
   TextInput,
 } from 'react-native-paper'
 import _ from 'lodash'
-import { Dimensions } from 'react-native'
+// import { Dimensions } from 'react-native'
 
-const window = Dimensions.get('window')
+// const window = Dimensions.get('window')
 
 const iconMap = {
   date: 'calendar-month',
@@ -115,13 +116,13 @@ const CategoryComponent = (props: any) => {
   )
   const [visible, setVisible] = React.useState(false)
   const [titleField, setTitleField] = React.useState<string>(
-    props.overloadCategory?.titleField || 'categoryName',
+    props.overloadCategory?.titleField || 'UnamedField',
   )
 
   const openMenu = () => setVisible(true)
   const closeMenu = () => setVisible(false)
   const addField = () => {
-    const copyFields = _.clone(fields)
+    const copyFields: any = _.clone(fields)
     copyFields.push({ type: 'text', name: '' })
     setFields(copyFields)
   }
@@ -234,19 +235,6 @@ const ManageCategoryContainer = () => {
     (state: { machines: MachineState[] }) => state.machines,
   )
 
-  // useEffect(() => {
-  //   useSelector()
-  // })
-
-  const addMachine = () => {
-    dispatch(
-      addCategory({
-        categoryName: 'arpit',
-        fields: [{}, {}],
-        titleField: 'arpit',
-      }),
-    )
-  }
   const submitCategory = () => {
     if (!categoryToAdd?.categoryName) {
       showSnackBar('Category Name is required')
@@ -279,23 +267,16 @@ const ManageCategoryContainer = () => {
     dispatch(addCategory(categoryToAdd))
     hideDialog()
   }
-  const patchCategory = (categoryData: any, uuid: string | undefined) => {
-    console.log(categoryData, uuid)
-  }
-
-  // const updateCategory = category => {}
 
   return (
     <>
       <ScrollView
         style={Layout.fill}
-        contentContainerStyle={[
-          // Layout.fill,
-          // Layout.colCenter,
-          Gutters.smallHPadding,
-        ]}
+        contentContainerStyle={[Gutters.smallHPadding]}
       >
-        <Text style={[tw`text-xl font-bold text-sky-700	mt-4`]}>Manage Categories</Text>
+        <Text style={[tw`text-xl font-bold text-sky-700	mt-4`]}>
+          Manage Categories
+        </Text>
         <View style={[tw`md:flex-row flex-wrap items-stretch`]}>
           {machines.map((machine, index) => (
             <View style={[tw`w-full md:w-3/6 p-3`]} key={index}>
@@ -303,7 +284,9 @@ const ManageCategoryContainer = () => {
                 <CategoryComponent
                   overloadCategory={machine}
                   updateCategory={(categoryData: any) =>
-                    patchCategory(categoryData, machine.uuid)
+                    dispatch(
+                      patchCategory({ categoryData, uuid: machine.uuid }),
+                    )
                   }
                   deleteCategory={() =>
                     dispatch(deleteCategory({ uuid: machine.uuid }))

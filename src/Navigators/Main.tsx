@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { DashboardContainer } from '@/Containers'
@@ -71,6 +72,7 @@ const MainNavigator = () => {
           key={p.uuid}
           name={`${p.categoryName}` || 'test'}
           component={CategoryViewContainer}
+          initialParams={p}
         />
       ))}
       <Drawer.Screen

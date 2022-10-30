@@ -1,45 +1,58 @@
-import React, { useState, useEffect } from 'react'
-import {
-  View,
-  ActivityIndicator,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native'
+import React from 'react'
+import { View, Text, ScrollView } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { Brand } from '@/Components'
 import { useTheme } from '@/Hooks'
-import { useLazyFetchOneQuery } from '@/Services/modules/users'
-import { changeTheme, ThemeState } from '@/Store/Theme'
 import tw from 'twrnc'
+import { Button, Divider } from 'react-native-paper'
+import { addItem, MachineItemState } from '@/Store/MachineItems'
+import { useSelector } from 'react-redux'
+import CategoryItemComponent from '@/Components/CategoryItem'
+import { MachineState } from '@/Store/Machines'
 
-const CategoryViewContainer = () => {
-  const { Common, Fonts, Gutters, Layout } = useTheme()
+const CategoryViewContainer = (props: any) => {
+  const { Gutters, Layout } = useTheme()
   const dispatch = useDispatch()
-
-  const [userId, setUserId] = useState('9')
-  const [fetchOne, { data, isSuccess, isLoading, isFetching, error }] =
-    useLazyFetchOneQuery()
-
-  useEffect(() => {
-    fetchOne(userId)
-  }, [fetchOne, userId])
-
-  const onChangeTheme = ({ theme, darkMode }: Partial<ThemeState>) => {
-    dispatch(changeTheme({ theme, darkMode }))
-  }
+  const items = useSelector(
+    (state: { machinesItems: MachineItemState[] }) => state.machinesItems,
+  )
+  const categories = useSelector(
+    (state: { machines: MachineState[] }) => state.machines,
+  )
+  const category = categories.find(c => {
+    return c.uuid === props.route.params.uuid
+  })
+  console.log(props, 'CategoryViewContainer')
 
   return (
     <ScrollView
       style={Layout.fill}
-      contentContainerStyle={[
-        Layout.fill,
-        Layout.colCenter,
-        Gutters.smallHPadding,
-      ]}
+      contentContainerStyle={[Gutters.smallHPadding]}
     >
-      <Text>CategoryViewContainer</Text>
+      <View style={[tw`flex-row justify-between items-center my-4`]}>
+        <Text style={[tw`text-xl font-bold text-sky-700`]}>
+          {category?.categoryName}
+        </Text>
+        <Button
+          mode="contained"
+          onPress={() =>
+            dispatch(addItem({ categoryUUID: category?.uuid, attributes: [] }))
+          }
+        >
+          Add New {category?.categoryName}
+        </Button>
+      </View>
+      <Divider style={[tw`bg-slate-500`]} />
+      <View style={[tw`flex-row flex-wrap`]}>
+        {items
+          .filter(item => item.categoryUUID == category?.uuid)
+          .map(item => (
+            <CategoryItemComponent
+              category={category}
+              item={item}
+              key={item.uuid}
+            />
+          ))}
+      </View>
     </ScrollView>
   )
 }

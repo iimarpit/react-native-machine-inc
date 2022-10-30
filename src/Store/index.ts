@@ -15,17 +15,19 @@ import {
 import { api } from '@/Services/api'
 import theme from './Theme'
 import machines from './Machines'
+import machinesItems from './MachineItems'
 
 const reducers = combineReducers({
   theme,
   machines,
+  machinesItems,
   api: api.reducer,
 })
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['theme', 'machines'],
+  whitelist: ['theme', 'machines', 'machinesItems'],
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers)
