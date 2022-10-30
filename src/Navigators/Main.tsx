@@ -11,7 +11,6 @@ import { MachineState } from '@/Store/Machines'
 import { useSelector } from 'react-redux'
 
 const CustomNavigationBar = (props: any) => {
-  console.log(props, 'orio')
   const [visible, setVisible] = React.useState(false)
   const openMenu = () => setVisible(true)
   const closeMenu = () => setVisible(false)

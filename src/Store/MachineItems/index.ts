@@ -10,13 +10,13 @@ const slice = createSlice({
       state,
       { payload: { categoryUUID, attributes } }: MachineItemPayload,
     ) => {
+      console.log(categoryUUID)
       state.push({ categoryUUID, attributes, uuid: nanoid() })
     },
     deleteItem: (state, { payload: { uuid } }) => {
       return state.filter(item => item.uuid !== uuid)
     },
     patchItem: (state, { payload: { itemData, uuid } }) => {
-      console.log(itemData, uuid,'hhhhhh')
       return state.map(item => {
         if (uuid === item.uuid) {
           return { ...item, ...itemData }

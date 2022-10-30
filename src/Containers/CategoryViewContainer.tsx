@@ -21,7 +21,6 @@ const CategoryViewContainer = (props: any) => {
   const category = categories.find(c => {
     return c.uuid === props.route.params.uuid
   })
-  console.log(props, 'CategoryViewContainer')
 
   return (
     <ScrollView
@@ -29,11 +28,12 @@ const CategoryViewContainer = (props: any) => {
       contentContainerStyle={[Gutters.smallHPadding]}
     >
       <View style={[tw`flex-row justify-between items-center my-4`]}>
-        <Text style={[tw`text-xl font-bold text-sky-700`]}>
+        <Text style={[tw`text-lg md:text-xl font-bold text-sky-700`]}>
           {category?.categoryName}
         </Text>
         <Button
           mode="contained"
+          style={[tw`z-20`]}
           onPress={() =>
             dispatch(addItem({ categoryUUID: category?.uuid, attributes: [] }))
           }
